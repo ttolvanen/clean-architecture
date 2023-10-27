@@ -1,24 +1,27 @@
 using Core.Dtos;
 using Core.Interfaces;
+using Core.Mediators;
 
 namespace Core.BusinessServices;
 
+/// <summary>
+/// Knows how to get the next question and save the answer.
+/// </summary>
 public class QuestionService
 {
-    private readonly QuestionRepository _repository;
+    private readonly IQuestionRepository _repository;
 
-    public QuestionService(QuestionRepository repository)
+    public QuestionService(IQuestionRepository repository)
     {
         _repository = repository;
     }
-    
-    public QuestionDto GetNextQuestion()
-    {
-        throw new NotImplementedException();
-    }
 
-    public QuestionDto SaveAnswer(string answer)
-    {
-        throw new NotImplementedException();
-    }
+    public QuestionDto GetNextQuestion() => 
+        QuestionMediator.CreateDto(_repository.GetCurrentQuestion());
+
+    public QuestionDto SaveAnswer(string answer) =>
+        QuestionMediator.CreateDto(
+            _repository.UpdateCurrentQuestion(
+                _repository.GetCurrentQuestion()
+                    .Answer(answer)));
 }

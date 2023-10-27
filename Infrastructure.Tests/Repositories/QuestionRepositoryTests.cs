@@ -6,24 +6,33 @@ namespace Infrastructure.Tests.Repositories;
 
 public class QuestionRepositoryTests
 {
-    private static readonly Question NameQuestion = new("What is your name?");
-    private static readonly Question AgeQuestion = new("What is your age?");
+  
+    private class FakeQuestion : IQuestion
+    {
+       public IQuestion Answer(string value) => throw new NotImplementedException();
 
+       public void Accept(QuestionPrinter printer) => throw new NotImplementedException();
+    }
+    
+    private readonly IQuestion firstQuestion = new FakeQuestion();
+    private readonly IQuestion secondQuestion = new FakeQuestion();
+    
     [Fact]
     public void GetCurrentQuestion()
     {
-        var repository = InMemoryQuestionRepository.Create(NameQuestion);
-        repository.GetCurrentQuestion().Should().Be(NameQuestion);
+        var repository = InMemoryQuestionRepository.CreateWithInitialQuestion(firstQuestion);
+        repository.GetCurrentQuestion().Should().Be(firstQuestion);
         
-        repository = InMemoryQuestionRepository.Create(AgeQuestion);
-        repository.GetCurrentQuestion().Should().Be(AgeQuestion);
+        repository = InMemoryQuestionRepository.CreateWithInitialQuestion(secondQuestion);
+        repository.GetCurrentQuestion().Should().Be(secondQuestion);
     }
     
     [Fact]
     public void UpdateCurrentQuestion()
     {
-        var repository = InMemoryQuestionRepository.Create(NameQuestion);
-        repository.UpdateCurrentQuestion(AgeQuestion);
-        repository.GetCurrentQuestion().Should().Be(AgeQuestion);
+        var repository = InMemoryQuestionRepository.CreateWithInitialQuestion(firstQuestion);
+        repository.UpdateCurrentQuestion(secondQuestion);
+        repository.GetCurrentQuestion().Should().Be(secondQuestion);
     }
 } 
+

@@ -2,9 +2,9 @@ using Core.Domain;
 
 namespace Core.Interfaces;
 
-public interface QuestionRepository
+public interface IQuestionRepository
 {
-    Question GetCurrentQuestion();
+    IQuestion GetCurrentQuestion();
 
-    void UpdateCurrentQuestion(Question question);
+    IQuestion UpdateCurrentQuestion(IQuestion textualQuestion);
 } 

@@ -1,31 +1,34 @@
 using Core.BusinessServices;
 using Core.Dtos;
 using Core.Interfaces;
-using Moq;
+using static Core.Domain.IQuestion;
 
 namespace Core.Tests.BusinessServices;
 
+internal class QuestionRepositoryFake : IQuestionRepository
+{
+    private IQuestion _currentQuestion = NameQuestion();
+
+    public IQuestion GetCurrentQuestion() => _currentQuestion;
+
+    public IQuestion UpdateCurrentQuestion(IQuestion textualQuestion) => _currentQuestion = textualQuestion;
+}   
+
 public class QuestionServiceTests
 {
-    private readonly Mock<QuestionRepository> _serviceMock;
+    private readonly QuestionService _service = new(new QuestionRepositoryFake());
 
-    public QuestionServiceTests()
-    {
-        _serviceMock = new Mock<QuestionRepository>();
-        _serviceMock.Setup(s => s.GetCurrentQuestion()).Returns(Question.NameQuestion);
-    }
     [Fact]
     public void GetNextQuestion()
     {
-        var service = new QuestionService(_serviceMock.Object);
-        service.GetNextQuestion().Should().Be(new QuestionDto("What is your name?"));
+        _service.GetNextQuestion().Should().Be(new QuestionDto("What is your name?"));
     }
-    
-    [Fact]
+
+    [Fact] 
     public void SaveAnswer()
     {
-        var service = new QuestionService(_serviceMock.Object);
-        service.SaveAnswer("Brian").Should().Be(new QuestionDto("What is your name?"));
-        
+        _service.SaveAnswer("Brian").Should().Be(new QuestionDto("What is your age?"));
+        _service.SaveAnswer("10").Should().Be(new QuestionDto("Is earth round?"));
+        _service.SaveAnswer("true").Should().Be(new QuestionDto("Thank you for taking the survey!"));
     }
 }

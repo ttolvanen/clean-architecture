@@ -1,8 +1,7 @@
-using Api.Controllers;
 using Core.BusinessServices;
-using Core.Domain;
 using Core.Interfaces;
 using Infrastructure.Repositories;
+using static Core.Domain.IQuestion;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,9 +12,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton<QuestionRepository>(
-    InMemoryQuestionRepository.Create(Question.NameQuestion)
-    );
+builder.Services.AddSingleton<IQuestionRepository>(
+    InMemoryQuestionRepository.CreateWithInitialQuestion(NameQuestion())
+);
 builder.Services.AddScoped<QuestionService>();
 
 var app = builder.Build();

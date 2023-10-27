@@ -3,24 +3,25 @@ using Core.Interfaces;
 
 namespace Infrastructure.Repositories;
 
-public class InMemoryQuestionRepository : QuestionRepository
+public class InMemoryQuestionRepository : IQuestionRepository
 {
-    private Question _currentQuestion;
+    private IQuestion _currentTextualQuestion;
     
-    private InMemoryQuestionRepository(Question initialQuestion)
+    private InMemoryQuestionRepository(IQuestion initialTextualQuestion)
     {
-        _currentQuestion = initialQuestion;
+        _currentTextualQuestion = initialTextualQuestion;
     }
 
-    public static InMemoryQuestionRepository Create(Question initialQuestion)
+    public static InMemoryQuestionRepository CreateWithInitialQuestion(IQuestion initialTextualQuestion)
     {
-        return new InMemoryQuestionRepository(initialQuestion);
+        return new InMemoryQuestionRepository(initialTextualQuestion);
     }
     
-    public Question GetCurrentQuestion() => _currentQuestion;
+    public IQuestion GetCurrentQuestion() => _currentTextualQuestion;
 
-    public void UpdateCurrentQuestion(Question question)
+    public IQuestion UpdateCurrentQuestion(IQuestion textualQuestion)
     {
-        _currentQuestion = question;
+        _currentTextualQuestion = textualQuestion;
+        return GetCurrentQuestion();
     }
 }
