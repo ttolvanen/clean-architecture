@@ -5,23 +5,19 @@ namespace Infrastructure.Repositories;
 
 public class InMemoryQuestionRepository : IQuestionRepository
 {
-    private IQuestion _currentTextualQuestion;
+    private readonly IQuestion _initialQuestion;
+    private List<Exam> _exams = new(); 
     
-    private InMemoryQuestionRepository(IQuestion initialTextualQuestion)
-    {
-        _currentTextualQuestion = initialTextualQuestion;
-    }
+    private InMemoryQuestionRepository(IQuestion initialQuestion) => _initialQuestion = initialQuestion;
 
-    public static InMemoryQuestionRepository CreateWithInitialQuestion(IQuestion initialTextualQuestion)
+    public static InMemoryQuestionRepository CreateWithInitialQuestion(IQuestion initialTextualQuestion) => 
+        new (initialTextualQuestion);
+
+    public Exam GetExamForStudent(StudentId studentId)
     {
-        return new InMemoryQuestionRepository(initialTextualQuestion);
+        if(!_exams.Any(e => e.IdMatches(studentId))) _exams.Add(new Exam(studentId, _initialQuestion));
+        return _exams.First(e => e.IdMatches(studentId));
     }
     
-    public IQuestion GetCurrentQuestion() => _currentTextualQuestion;
-
-    public IQuestion UpdateCurrentQuestion(IQuestion textualQuestion)
-    {
-        _currentTextualQuestion = textualQuestion;
-        return GetCurrentQuestion();
-    }
+    public void UpdateExam(Exam exam) => _exams = _exams.Where( e => !e.Equals(exam)).Append(exam).ToList();
 }

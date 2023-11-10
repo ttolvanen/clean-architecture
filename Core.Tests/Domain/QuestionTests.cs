@@ -1,44 +1,51 @@
-using static Core.Domain.IQuestion;
 using static Core.Tests.Domain.QuestionTestExtensions;
 
 namespace Core.Tests.Domain;
 
 public class QuestionTests
 {
-    private const string WhatIsYourName = "What is your name?";
-    private const string WhatIsYourAge = "What is your age?";
-    private const string IsEarthRound = "Is earth round?";
-    private const string ThankYouForTakingTheSurvey = "Thank you for taking the survey!";
-    private const string TheSurveyHasFailed = "The survey has failed.";
-    
     [Fact]
     public void PrintQuestion()
     {
-        NameQuestion().Accept(ShouldOutput(WhatIsYourName));
-        NameQuestion().Accept(ShouldOutput(WhatIsYourName));
-        AgeQuestion().Accept(ShouldOutput(WhatIsYourAge));
-        IsEarthRound().Accept(ShouldOutput(IsEarthRound));
-        Success().Accept(ShouldOutput(ThankYouForTakingTheSurvey));
-        Failure().Accept(ShouldOutput(TheSurveyHasFailed));
+        NameQuestion().Accept(ShouldOutput(WhatIsYourNameText));
+        AgeQuestion().Accept(ShouldOutput(WhatIsYourAgeText));
+        IsEarthRound().Accept(ShouldOutput(IsEarthRoundText));
+        Success().Accept(ShouldOutput(ThankYouForTakingTheSurveyText));
+        Failure().Accept(ShouldOutput(TheSurveyHasFailedText));
+    }
+
+    [Fact]
+    public void AcceptWhenNoAnswer()
+    {
+        NameQuestion().ShouldNotHaveAnswer();
+        AgeQuestion().ShouldNotHaveAnswer();
+        IsEarthRound().ShouldNotHaveAnswer();
+        Success().ShouldNotHaveAnswer();
+        Failure().ShouldNotHaveAnswer();
     }
     
     [Fact]
     public void SettingAnswer()
     {
-        NameQuestion().Answer("Brian").ShouldHaveQuestionText(WhatIsYourAge);
-        AgeQuestion().Answer("20").ShouldHaveQuestionText(IsEarthRound);
-        IsEarthRound().Answer("true").ShouldHaveQuestionText(ThankYouForTakingTheSurvey);
-        IsEarthRound().Answer("yes").ShouldHaveQuestionText(ThankYouForTakingTheSurvey);
-        IsEarthRound().Answer("false").ShouldHaveQuestionText(TheSurveyHasFailed);
-        IsEarthRound().Answer("no").ShouldHaveQuestionText(TheSurveyHasFailed);
-
-        NameQuestion().Invoking(q => q.Answer("10Foo")).Should().NotThrow();
-        AgeQuestion().Invoking( q => q.Answer("10")).Should().NotThrow();
-
-        Failure().Invoking(q => q.Answer("any answer")).Should().Throw<InvalidOperationException>();
-        Success().Invoking(q => q.Answer("any answer")).Should().Throw<InvalidOperationException>();
+        var nameQuestion = NameQuestion();
+        nameQuestion.Answer("Brian").ShouldHaveQuestion(WhatIsYourAgeText);
+        nameQuestion.ShouldHaveQuestionAndAnswer(WhatIsYourNameText,"Brian");
+        
+        var ageQuestion = AgeQuestion();
+        ageQuestion.Answer("20").ShouldHaveQuestion(IsEarthRoundText);
+        ageQuestion.ShouldHaveQuestionAndAnswer(WhatIsYourAgeText, 20);
+        
+        var isEarthRoundTrue = IsEarthRound();
+        isEarthRoundTrue.Answer("true").ShouldHaveQuestionAndAnswer(ThankYouForTakingTheSurveyText, true);
+        isEarthRoundTrue.ShouldHaveQuestionAndAnswer(IsEarthRoundText, true);
+        
+        var isEarthRoundFalse = IsEarthRound();
+        isEarthRoundFalse.Answer("false").ShouldHaveQuestion(TheSurveyHasFailedText);
+        isEarthRoundFalse.ShouldHaveQuestionAndAnswer(IsEarthRoundText, false);
+        
+        IsEarthRound().Answer("yes").ShouldHaveQuestion(ThankYouForTakingTheSurveyText);
+        IsEarthRound().Answer("no").ShouldHaveQuestion(TheSurveyHasFailedText);
     }
-   
 
     [Fact]
     public void TerminalQuestions()
@@ -52,6 +59,13 @@ public class QuestionTests
     
     [Fact]
     public void InvalidAnswers(){
+
+        NameQuestion().Invoking(q => q.Answer("10Foo")).Should().NotThrow();
+        AgeQuestion().Invoking( q => q.Answer("10")).Should().NotThrow();
+
+        Failure().Invoking(q => q.Answer("any answer")).Should().Throw<InvalidOperationException>();
+        Success().Invoking(q => q.Answer("any answer")).Should().Throw<InvalidOperationException>();
+
         NameQuestion().Invoking(q => q.Answer("10")).Should().NotThrow();
         IsEarthRound().Invoking(q => q.Answer("10")).Should().Throw<ArgumentException>();
         IsEarthRound().Invoking(q => q.Answer("foo")).Should().Throw<ArgumentException>();
@@ -63,30 +77,5 @@ public class QuestionTests
     {
         Success().IsTerminal().Should().BeTrue();
         NameQuestion().IsTerminal().Should().BeFalse();
-    }
-}
-
-internal static  class QuestionTestExtensions
-{
-
-    public static void ShouldHaveQuestionText(this IQuestion question, string expectedText) =>
-        question.Accept(new FakeFormatter(expectedText));
-    
-    public static QuestionPrinter ShouldOutput(string expectedText) => 
-        new FakeFormatter(expectedText);
-}
-
-internal class FakeFormatter : QuestionPrinter
-{
-    private readonly string _expectedQuestionText;
-
-    public FakeFormatter(string expectedQuestionText)
-    {
-        _expectedQuestionText = expectedQuestionText;
-    }
-
-    public void VisitPrintText(string question)
-    {
-        question.Should().Be(_expectedQuestionText);
     }
 }

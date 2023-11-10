@@ -1,30 +1,22 @@
+using Core.Dtos;
+using Core.Interfaces;
+
 namespace Core.Domain;
 
 /// <summary>
 /// Simple question is a question that has only one possible typed answer and next question.
 /// </summary>
 /// <typeparam name="T">Type of answer</typeparam>
-internal class SimpleQuestion<T> : IQuestion
+internal abstract class SimpleQuestion<T>(string questionText, IQuestion nextQuestion) : IQuestion
 {
-    private T? _answer;
-    private readonly string _questionText;
-    private readonly IQuestion _nextQuestion;
-
-    /// <summary>
-    /// Simple question is a question that has only one possible typed answer and next question.
-    /// </summary>
-    /// <typeparam name="T">Type of answer</typeparam>
-    public SimpleQuestion(string questionText, IQuestion nextQuestion)
-    {
-        _questionText = questionText;
-        _nextQuestion = nextQuestion;
-    }
+    protected T? GivenAnswer;
+    protected readonly string QuestionText = questionText;
 
     public IQuestion Answer(string value)
     {
         try
         {
-            _answer = (T) Convert.ChangeType(value, typeof(T));
+            GivenAnswer = (T) Convert.ChangeType(value, typeof(T));
             return GetNextQuestion();
         }
         catch (FormatException)
@@ -33,7 +25,9 @@ internal class SimpleQuestion<T> : IQuestion
         }
     }
     
-    public void Accept(QuestionPrinter printer) => printer.VisitPrintText(_questionText);
+    public void Accept(IQuestionFormatter formatter) => formatter.VisitPrintText(QuestionText);
 
-    private IQuestion GetNextQuestion() => _answer is not null ? _nextQuestion : this;
+    public abstract void Accept(IAnswerFormatter formatter);
+    
+    private IQuestion GetNextQuestion() => GivenAnswer is not null ? nextQuestion : this;
 }

@@ -1,6 +1,8 @@
 using Core.Domain;
+using Core.Interfaces;
 using FluentAssertions;
 using Infrastructure.Repositories;
+using static Infrastructure.Tests.StudentConstants;
 
 namespace Infrastructure.Tests.Repositories;
 
@@ -9,30 +11,38 @@ public class QuestionRepositoryTests
   
     private class FakeQuestion : IQuestion
     {
-       public IQuestion Answer(string value) => throw new NotImplementedException();
+        public IQuestion Answer(string _) => this;
 
-       public void Accept(QuestionPrinter printer) => throw new NotImplementedException();
+        public void Accept(IQuestionFormatter formatter) {}
+        public void Accept(IAnswerFormatter formatter) {}
     }
     
-    private readonly IQuestion firstQuestion = new FakeQuestion();
-    private readonly IQuestion secondQuestion = new FakeQuestion();
+    private static readonly IQuestion FirstQuestion = new FakeQuestion();
+    private static readonly IQuestion SecondQuestion = new FakeQuestion();
     
+    private readonly InMemoryQuestionRepository _sut = 
+        InMemoryQuestionRepository.CreateWithInitialQuestion(FirstQuestion);
+
     [Fact]
-    public void GetCurrentQuestion()
+    public void GetExam()
     {
-        var repository = InMemoryQuestionRepository.CreateWithInitialQuestion(firstQuestion);
-        repository.GetCurrentQuestion().Should().Be(firstQuestion);
+        _sut.GetExamForStudent(BrianStudentId).GetNextQuestion().Should().Be(FirstQuestion);
+        _sut.GetExamForStudent(JaneStudentId).GetNextQuestion().Should().Be(FirstQuestion);
         
-        repository = InMemoryQuestionRepository.CreateWithInitialQuestion(secondQuestion);
-        repository.GetCurrentQuestion().Should().Be(secondQuestion);
+        InMemoryQuestionRepository.CreateWithInitialQuestion(SecondQuestion)
+            .GetExamForStudent(JaneStudentId).GetNextQuestion().Should().Be(SecondQuestion);
     }
     
     [Fact]
-    public void UpdateCurrentQuestion()
+    public void UpdateExam()
     {
-        var repository = InMemoryQuestionRepository.CreateWithInitialQuestion(firstQuestion);
-        repository.UpdateCurrentQuestion(secondQuestion);
-        repository.GetCurrentQuestion().Should().Be(secondQuestion);
+        var exam1 = new Exam(BrianStudentId, SecondQuestion);
+        var exam2 = new Exam(JaneStudentId, SecondQuestion);
+        _sut.UpdateExam(exam1);
+        _sut.GetExamForStudent(BrianStudentId).Should().Be(exam1);
+      
+        _sut.UpdateExam(exam2);
+        _sut.GetExamForStudent(BrianStudentId).Should().Be(exam1);
+        _sut.GetExamForStudent(JaneStudentId).Should().Be(exam2);
     }
-} 
-
+}

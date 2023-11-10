@@ -1,14 +1,13 @@
-using Core.Dtos;
-using Core.Mediators;
-using static Core.Domain.IQuestion;
+using static Core.Mediators.QuestionMediator;
 
 namespace Core.Tests.Mediators;
 
 public class QuestionMediatorTests
 {
     [Fact]
-    public void CreateDto()
+    public void CreatingDto()
     {
-        QuestionMediator.CreateDto(NameQuestion()).Should().Be(new QuestionDto("What is your name?"));
+        CreateDto(NameQuestion()).Should().Be(new QuestionDto(WhatIsYourNameText));
+        CreateDto(Failure()).Should().Be(new QuestionDto(TheSurveyHasFailedText));
     }
 }

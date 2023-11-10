@@ -13,7 +13,7 @@ using Controllers;
 public class QuestionControllerTests
 {
     private readonly QuestionsController _controller =
-        new QuestionsController(
+        new (
             NullLogger<QuestionsController>.Instance,
             new QuestionService(InMemoryQuestionRepository.CreateWithInitialQuestion(NameQuestion()))
         );
@@ -41,7 +41,6 @@ public class QuestionControllerTests
             .Should()
             .BadRequestWithValue("Answer should be of type Int32");
     }
-
 }
 
 public static class TestExtensions
