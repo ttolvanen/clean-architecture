@@ -46,6 +46,4 @@ public static class ExamAssembler
                 question.Accept(this);
         }
     }
-
-   
 }

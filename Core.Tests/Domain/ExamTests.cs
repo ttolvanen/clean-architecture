@@ -1,3 +1,4 @@
+using Core.Interfaces;
 using Core.Tests.Fakes;
 
 namespace Core.Tests.Domain;
@@ -32,4 +33,5 @@ public class ExamTests
         FinishedExam.IdMatches(1.StudentId()).Should().BeTrue();
     }
 }
+
 

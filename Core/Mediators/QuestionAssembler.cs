@@ -4,7 +4,7 @@ using Core.Interfaces;
 
 namespace Core.Mediators;
 
-public static class QuestionMediator
+public static class QuestionAssembler
 {
     public static QuestionDto CreateDto(IQuestion question)
     {
@@ -18,6 +18,5 @@ public static class QuestionMediator
         public string Question { get; private set; } = string.Empty;
         public void VisitPrintText(string question) => Question = question;
     }
-        
 }
 

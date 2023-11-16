@@ -15,7 +15,7 @@ public class QuestionControllerTests
     private readonly QuestionsController _controller =
         new (
             NullLogger<QuestionsController>.Instance,
-            new QuestionService(InMemoryQuestionRepository.CreateWithInitialQuestion(NameQuestion()))
+            new QuestionService(InMemoryExamRepository.CreateWithInitialQuestion(NameQuestion()))
         );
 
     [Fact]

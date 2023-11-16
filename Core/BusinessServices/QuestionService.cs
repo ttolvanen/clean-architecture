@@ -1,27 +1,26 @@
 using Core.Domain;
 using Core.Dtos;
 using Core.Interfaces;
-using static Core.Mediators.ExamAssembler;
-using static Core.Mediators.QuestionMediator;
+using Core.Mediators;
 
 namespace Core.BusinessServices;
 
 /// <summary>
 /// Knows how to get the next question and save the answer.
 /// </summary>
-public class QuestionService(IQuestionRepository repository)
+public class QuestionService(IExamRepository repository)
 {
     public QuestionDto GetNextQuestion(StudentId studentId) => 
-        CreateDto(repository.GetExamForStudent(studentId).GetNextQuestion());
+        QuestionAssembler.CreateDto(repository.GetExamForStudent(studentId).GetNextQuestion());
 
     public QuestionDto SaveAnswer(StudentId studentId, string answer)
     {
         var exam = repository.GetExamForStudent(studentId);
         exam.Answer(answer);
         repository.UpdateExam(exam);
-        return CreateDto(exam.GetNextQuestion());
+        return QuestionAssembler.CreateDto(exam.GetNextQuestion());
     }
     
     public ExamDto GetExamSubmission(StudentId studentId) => 
-        CreateDto(repository.GetExamForStudent(studentId));
+        ExamAssembler.CreateDto(repository.GetExamForStudent(studentId));
 }

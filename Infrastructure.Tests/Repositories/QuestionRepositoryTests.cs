@@ -20,8 +20,8 @@ public class QuestionRepositoryTests
     private static readonly IQuestion FirstQuestion = new FakeQuestion();
     private static readonly IQuestion SecondQuestion = new FakeQuestion();
     
-    private readonly InMemoryQuestionRepository _sut = 
-        InMemoryQuestionRepository.CreateWithInitialQuestion(FirstQuestion);
+    private readonly InMemoryExamRepository _sut = 
+        InMemoryExamRepository.CreateWithInitialQuestion(FirstQuestion);
 
     [Fact]
     public void GetExam()
@@ -29,7 +29,7 @@ public class QuestionRepositoryTests
         _sut.GetExamForStudent(BrianStudentId).GetNextQuestion().Should().Be(FirstQuestion);
         _sut.GetExamForStudent(JaneStudentId).GetNextQuestion().Should().Be(FirstQuestion);
         
-        InMemoryQuestionRepository.CreateWithInitialQuestion(SecondQuestion)
+        InMemoryExamRepository.CreateWithInitialQuestion(SecondQuestion)
             .GetExamForStudent(JaneStudentId).GetNextQuestion().Should().Be(SecondQuestion);
     }
     

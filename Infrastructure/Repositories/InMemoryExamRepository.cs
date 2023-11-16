@@ -3,14 +3,14 @@ using Core.Interfaces;
 
 namespace Infrastructure.Repositories;
 
-public class InMemoryQuestionRepository : IQuestionRepository
+public class InMemoryExamRepository : IExamRepository
 {
     private readonly IQuestion _initialQuestion;
     private List<Exam> _exams = new(); 
     
-    private InMemoryQuestionRepository(IQuestion initialQuestion) => _initialQuestion = initialQuestion;
+    private InMemoryExamRepository(IQuestion initialQuestion) => _initialQuestion = initialQuestion;
 
-    public static InMemoryQuestionRepository CreateWithInitialQuestion(IQuestion initialTextualQuestion) => 
+    public static InMemoryExamRepository CreateWithInitialQuestion(IQuestion initialTextualQuestion) => 
         new (initialTextualQuestion);
 
     public Exam GetExamForStudent(StudentId studentId)

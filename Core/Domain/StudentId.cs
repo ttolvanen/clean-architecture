@@ -1,8 +1,8 @@
-using Microsoft.VisualBasic.CompilerServices;
+using Core.Interfaces;
 
 namespace Core.Domain;
 
-public record StudentId
+public record StudentId : IId
 {
     private readonly int _number;
 
@@ -12,6 +12,8 @@ public record StudentId
         _number = number;
     }
     public override string ToString() => $"{nameof(StudentId)}({_number})".ToString();
+
+    public void Accept(IIdVisitor visitor) => visitor.Visit(_number);
 }
 
 public static class StudentIdExtensions {

@@ -1,3 +1,6 @@
+using Core.Interfaces;
+using Moq;
+
 namespace Core.Tests.Domain;
 
 public class StudentIdTests
@@ -41,5 +44,18 @@ public class StudentIdTests
     {
         1.StudentId().GetHashCode().Should().Be(1.StudentId().GetHashCode());
         1.StudentId().GetHashCode().Should().NotBe(2.StudentId().GetHashCode());
+    }
+
+    [Theory]
+    [InlineData(1)]
+    [InlineData(10)]
+    [InlineData(10000)]
+    public void VisitIdVisitor(int expectedId)
+    {
+        var mockVisitor = new Mock<IIdVisitor>();
+        mockVisitor.Setup(v => v.Visit(It.IsAny<int>()))
+            .Callback((int id) => id.Should().Be(expectedId) );
+
+        expectedId.StudentId().Accept(mockVisitor.Object);
     }
 }

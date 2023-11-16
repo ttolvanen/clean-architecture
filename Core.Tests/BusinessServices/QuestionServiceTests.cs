@@ -9,7 +9,7 @@ public class QuestionServiceTests
 {
     private readonly QuestionService _service;
 
-    private readonly Mock<IQuestionRepository> _questionRepositoryMock = new();
+    private readonly Mock<IExamRepository> _questionRepositoryMock = new();
     private readonly Exam _brianExam = new (BrianStudentId, IQuestion.NameQuestion());
     private readonly Exam _janeExam = new (JaneStudentId, IQuestion.NameQuestion());
 

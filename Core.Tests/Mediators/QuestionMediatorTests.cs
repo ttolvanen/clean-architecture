@@ -1,4 +1,4 @@
-using static Core.Mediators.QuestionMediator;
+using static Core.Mediators.QuestionAssembler;
 
 namespace Core.Tests.Mediators;
 

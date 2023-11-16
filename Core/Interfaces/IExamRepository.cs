@@ -2,7 +2,7 @@ using Core.Domain;
 
 namespace Core.Interfaces;
 
-public interface IQuestionRepository
+public interface IExamRepository
 {
     Exam GetExamForStudent(StudentId studentId);
 
