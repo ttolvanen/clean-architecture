@@ -1,4 +1,5 @@
 using Core.Interfaces;
+
 namespace Core.Domain;
 
 /// <summary>
@@ -6,7 +7,7 @@ namespace Core.Domain;
 /// </summary>
 public class Exam(StudentId studentId, IQuestion currentQuestion)
 {
-    private readonly List<IQuestion> _answeredQuestions = new();
+    private readonly List<IQuestion> _answeredQuestions = [];
 
     public void Answer(string answer)
     {
@@ -18,9 +19,12 @@ public class Exam(StudentId studentId, IQuestion currentQuestion)
     public bool IsReady() => currentQuestion.IsTerminal();
 
     public IQuestion GetNextQuestion() => currentQuestion;
+    
+    public bool IdMatches(StudentId anotherStudentId) => studentId == anotherStudentId;
+    
+    public void Accept(IExamVisitor visitor) => visitor.VisitId(studentId);
 
     public void Accept(IExamFormatter answerFormatter) =>
         answerFormatter.VisitAnsweredQuestions(_answeredQuestions);
 
-    public bool IdMatches(StudentId anotherStudentId) => studentId == anotherStudentId;
 }

@@ -5,9 +5,9 @@ namespace Core.Tests.Domain;
 
 public class ExamTests
 {
-    private static readonly IQuestion AnotherFakeQuestion = new QuestionFake(IQuestion.Success());
+    private static readonly IQuestion AnotherFakeQuestion = new QuestionFake(Success());
     private static readonly IQuestion FakeQuestion = new QuestionFake(AnotherFakeQuestion);
-    private static readonly Exam FinishedExam = new (1.StudentId(), IQuestion.Success());
+    private static readonly Exam FinishedExam = new (1.StudentId(), Success());
      
     private readonly Exam _exam = new (1.StudentId(), FakeQuestion);
 
@@ -23,6 +23,7 @@ public class ExamTests
     {
         _exam.Answer("Brian");
         _exam.GetNextQuestion().Should().Be(AnotherFakeQuestion);
+        _exam.ShouldHaveQuestionsAndAnswers([("QuestionFake", "Brian")]);
     }
 
     [Fact]
