@@ -1,5 +1,6 @@
 using Core.BusinessServices;
 using Core.Tests.Fakes;
+using Domain.Exams;
 
 namespace Core.Tests.BusinessServices;
 
@@ -12,7 +13,6 @@ public class ExamFactoryTests
     {
         new ExamFactory(_initialQuestion)
             .CreateExam(1.StudentId()).Should().NotBeNull();
-
         new ExamFactory(_initialQuestion)
             .CreateExam(1.StudentId()).GetNextQuestion()
             .Should().Be(_initialQuestion);

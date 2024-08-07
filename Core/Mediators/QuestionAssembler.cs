@@ -1,6 +1,6 @@
-using Core.Domain;
 using Core.Dtos;
-using Core.Interfaces;
+using Domain.Questions;
+using Domain.Visitors;
 
 namespace Core.Mediators;
 
@@ -16,7 +16,7 @@ public static class QuestionAssembler
     private class QuestionFormatterImplementation : IQuestionFormatter
     {
         public string Question { get; private set; } = string.Empty;
-        public void VisitPrintText(string question) => Question = question;
+        public void Format(string question) => Question = question;
     }
 }
 

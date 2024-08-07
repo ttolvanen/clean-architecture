@@ -1,7 +1,7 @@
-using Core.Domain;
 using Core.Dtos;
-using Core.Interfaces;
 using Core.Mediators;
+using Domain.Exams;
+using Domain.Visitors;
 
 namespace Core.BusinessServices;
 

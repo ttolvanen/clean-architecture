@@ -1,4 +1,5 @@
 using Core.Mediators;
+using Domain.Exams;
 
 namespace Core.Tests.Mediators;
 

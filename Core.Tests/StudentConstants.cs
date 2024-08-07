@@ -1,3 +1,5 @@
+using Domain.Exams;
+
 namespace Core.Tests;
 
 public static class StudentConstants

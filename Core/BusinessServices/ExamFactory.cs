@@ -1,4 +1,6 @@
-using Core.Domain;
+using Domain;
+using Domain.Exams;
+using Domain.Questions;
 
 namespace Core.BusinessServices;
 

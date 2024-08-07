@@ -1,5 +1,7 @@
-using Core.Domain;
-using Core.Interfaces;
+using Domain;
+using Domain.Exams;
+using Domain.Questions;
+using Domain.Visitors;
 using FluentAssertions;
 using Infrastructure.Repositories;
 using static Infrastructure.Tests.StudentConstants;
@@ -20,7 +22,7 @@ public class QuestionRepositoryTests
     private static readonly IQuestion FirstQuestion = new FakeQuestion();
     private static readonly IQuestion SecondQuestion = new FakeQuestion();
     
-    private readonly InMemoryExamRepository _sut = 
+    private readonly IExamRepository _sut = 
         InMemoryExamRepository.CreateWithInitialQuestion(FirstQuestion);
 
     [Fact]

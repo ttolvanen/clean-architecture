@@ -1,5 +1,5 @@
-using Core.Domain;
-using Core.Interfaces;
+using Domain.Exams;
+using Domain.Visitors;
 
 namespace Core.Mediators;
 
@@ -7,7 +7,7 @@ public class IdVisitor: IIdVisitor
 {
     private int _id;
 
-    public int ToId(StudentId studentId)
+    public int ToNumber(StudentId studentId)
     {   
         studentId.Accept(this);
         return _id;

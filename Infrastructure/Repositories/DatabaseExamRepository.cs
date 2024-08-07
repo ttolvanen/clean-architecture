@@ -1,28 +1,27 @@
-using System.Runtime.InteropServices.JavaScript;
 using Core.BusinessServices;
-using Core.Domain;
-using Core.Interfaces;
 using Core.Mediators;
+using Domain.Exams;
+using Domain.Visitors;
 using Infrastructure.Database;
 using Infrastructure.Entities;
 using Infrastructure.Mappers;
 
 namespace Infrastructure.Repositories;
 
-public class DatabaseExamRepository(QuestionDatabaseContext dbContext, ExamDataMapper dataMapper, ExamFactory factory) : IExamRepository
+public class DatabaseExamRepository(QuestionDatabaseContext dbContext, ExamEntityMapper entityMapper, ExamFactory factory) : IExamRepository
 {
     public Exam GetExamForStudent(StudentId studentId) => 
-        dataMapper.ToDomainModel(GetOrCreate(studentId));
+        entityMapper.ToDomainModel(GetOrCreate(studentId));
 
     private ExamEntity GetOrCreate(StudentId studentId)
     {
-        var studentIdValue = new IdVisitor().ToId(studentId);
+        var studentIdValue = new IdVisitor().ToNumber(studentId);
 
         if (EntityExists(studentIdValue)) 
             return dbContext.Exams.Single(e => e.StudentId == studentIdValue);
         
         var exam = factory.CreateExam(studentId);
-        var entity = dataMapper.CreateEntity(studentId, exam);
+        var entity = ExamEntityMapper.CreateEntity(studentId, exam);
         dbContext.Exams.Add(entity);
         dbContext.SaveChanges();
         return entity;
@@ -33,8 +32,7 @@ public class DatabaseExamRepository(QuestionDatabaseContext dbContext, ExamDataM
 
     public void UpdateExam(Exam exam)
     {
-        var examVisitor = new ExamVisitor(exam);
-        var entity = GetOrCreate(examVisitor.StudentId!);
+        var entity = GetOrCreate(new ExamStudentIdAccessor(exam).StudentId);
         entity.Update(exam);
         
         dbContext.Update(entity);

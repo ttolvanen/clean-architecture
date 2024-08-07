@@ -1,4 +1,4 @@
-using Core.Domain;
+using Domain.Exams;
 
 namespace Infrastructure.Tests;
 

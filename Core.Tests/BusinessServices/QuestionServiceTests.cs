@@ -1,5 +1,7 @@
 using Core.BusinessServices;
-using Core.Interfaces;
+using Domain;
+using Domain.Exams;
+using Domain.Visitors;
 using Moq;
 using static Core.Tests.StudentConstants;
 
